@@ -2,8 +2,7 @@
 
 A high-performance, interactive physics simulation that visualizes magnetic fields using iron filings and rigid-body magnet dynamics. Built with Vanilla JavaScript and Canvas API.
 
-![Magnet Simulation Preview](https://via.placeholder.com/800x450/050505/00f2ff?text=Ultra-Realistic+Magnets+Simulation)
-
+[![Ultra-Realistic-Magnets.png](https://i.postimg.cc/nch0Ph86/Ultra-Realistic-Magnets.png)](https://postimg.cc/yW2mJB8P)
 ## 🌟 Features
 
 - **Dynamic Magnetic Fields**: Real-time visualization of magnetic field lines using thousands of "iron filings" that react to magnet positions and orientations.
@@ -39,6 +38,4 @@ A high-performance, interactive physics simulation that visualizes magnetic fiel
 
 No dependencies or build steps required!
 
-## 📜 License
 
-This project is part of the JavaScript30 challenge. Feel free to use, modify, and distribute it for educational purposes.
