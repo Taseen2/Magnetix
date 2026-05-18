@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetix - Ultra-Realistic Magnets</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- HUD (Heads-Up Display): Provides user instructions and controls visualization -->
+    <div class="hud">
+        <div class="hud-content">
+            <!-- Instruction for Moving magnets -->
+            <div class="hud-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.686 2 6 4.686 6 8v8c0 3.314 2.686 6 6 6s6-2.686 6-6V8c0-3.314-2.686-6-6-6zm0 0v6M12 22v-6M6 12h12"/></svg>
+                <span>Drag to Move</span>
+            </div>
+            <div class="divider"></div>
+            <!-- Instruction for Rotating magnets (Right-Click) -->
+            <div class="hud-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.686 2 6 4.686 6 8v8c0 3.314 2.686 6 6 6s6-2.686 6-6V8c0-3.314-2.686-6-6-6zM12 2v6"/><path d="M12 8l3-3m-6 0l3 3"/></svg>
+                <span>Right Click and Hold to Rotate</span>
+            </div>
+            <div class="divider"></div>
+            <!-- Instruction for Scaling magnets (Mouse Wheel) -->
+            <div class="hud-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.686 2 6 4.686 6 8v8c0 3.314 2.686 6 6 6s6-2.686 6-6V8c0-3.314-2.686-6-6-6z"/><circle cx="12" cy="8" r="1.5" fill="currentColor"/></svg>
+                <span>Scroll On Magnet to Resize</span>
+            </div>
+            <div class="divider"></div>
+            <!-- Accessible Toggle Switch for Mouse Magnet -->
+            <button id="mouse-magnet-toggle" class="toggle-switch" role="switch" aria-checked="false" aria-label="Toggle mouse magnet" tabindex="0">
+                <span class="toggle-track" aria-hidden="true">
+                    <span class="toggle-thumb"></span>
+                </span>
+                <span class="switch-label">Mouse As Magnet</span>
+            </button>
+        </div>
+        <!-- Tagline explaining the core magnet physics rule -->
+        <div class="hud-physics">OPPOSITES ATTRACT | LIKES REPEL</div>
+    </div>
+    
+    <!-- Canvas layer for drawing the iron filings magnetic field -->
+    <canvas id="filings-canvas"></canvas>
+    
+    <!-- Main container for magnets and their physical interactions -->
+    <div id="physics-container">
+        <!-- Shadow elements that follow magnets for a 3D depth effect -->
+        <div id="shadow1" class="magnet-shadow"></div>
+        <div id="shadow2" class="magnet-shadow"></div>
+
+        <!-- Magnet 1: Visual representation with North (N) and South (S) poles -->
+        <div id="magnet1" class="magnet" oncontextmenu="return false;">
+            <div class="pole north">N</div>
+            <div class="pole south">S</div>
+        </div>
+        <!-- Magnet 2 -->
+        <div id="magnet2" class="magnet" oncontextmenu="return false;">
+            <div class="pole north">N</div>
+            <div class="pole south">S</div>
+        </div>
+
+        <!-- Dynamic container for spark particles created during collisions -->
+        <div id="sparks-container"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+:root {
+    /* Cyberpunk Color Palette */
+    --bg-color: #050505;
+    --north-color: #ff0055;
+    /* Neon Pink/Red */
+    --south-color: #00f2ff;
+    /* Neon Cyan */
+    --particle-color: #00f2ff;
+    --trail-opacity: 0.15;
+
+    /* Layering System (Z-Index) */
+    --z-canvas: -10;
+    /* Background iron filings */
+    --z-physics: 10;
+    /* Main container */
+    --z-magnet-shadow: 20;
+    /* Shadows below magnets */
+    --z-magnet: 30;
+    /* Default magnet layer */
+    --z-magnet-drag: 120;
+    /* Lifted magnet when dragging */
+    --z-hud: 200;
+    /* UI elements on top */
+    --z-spark: 300;
+    /* Collision effects on very top */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-color);
+    overflow: hidden;
+    /* Prevent scrolling during interaction */
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Background canvas for magnetic field lines */
+#filings-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-canvas);
+    background: #000000;
+}
+
+/* Layer containing the interactive physics elements */
+#physics-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-physics);
+    pointer-events: none;
+    /* Let clicks pass through to elements inside */
+}
+
+/* Heads-Up Display (User Instructions) */
+.hud {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-hud);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    pointer-events: auto;
+}
+
+/* Frosted glass effect for HUD background */
+.hud-content {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px 35px;
+    border-radius: 100px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.hud-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.hud-item svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    flex: 0 0 20px;
+    display: block;
+    opacity: 0.8;
+}
+
+.hud-item span {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Cyberpunk Toggle Switch */
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.toggle-track {
+    width: 60px;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toggle-switch:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.toggle-switch.on {
+    color: #fff;
+}
+
+.toggle-switch.on .toggle-track {
+    background: rgba(0, 242, 255, 0.15);
+    border-color: rgba(0, 242, 255, 0.4);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+}
+
+.toggle-switch.on .toggle-thumb {
+    transform: translateX(20px);
+    background: var(--south-color);
+    box-shadow: 0 0 10px var(--south-color);
+}
+
+.switch-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.divider {
+    width: 1px;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.hud-physics {
+    font-size: 15px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+}
+
+/* The Magnet Body */
+.magnet {
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    display: flex;
+    border-radius: 8px;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    transform-origin: center;
+    z-index: var(--z-magnet);
+    pointer-events: auto;
+}
+
+/* Visual state when magnet is picked up */
+.magnet.dragging {
+    cursor: grabbing;
+    z-index: var(--z-magnet-drag);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+}
+
+/* Individual Poles (N/S) */
+.pole {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 20px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Top highlight for 3D metallic look */
+.pole::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, transparent 100%);
+}
+
+.north {
+    background: linear-gradient(135deg, var(--north-color) 0%, #881337 100%);
+    border-radius: 8px 0 0 8px;
+    border-right: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.south {
+    background: linear-gradient(135deg, var(--south-color) 0%, #1e3a8a 100%);
+    border-radius: 0 8px 8px 0;
+}
+
+/* Shadow that follows the magnet on the floor */
+.magnet-shadow {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    filter: blur(10px);
+    border-radius: 12px;
+    z-index: var(--z-magnet-shadow);
+    pointer-events: none;
+    transform-origin: center;
+}
+
+/* Collision spark particle */
+.spark {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: #fbbf24;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #f59e0b;
+    pointer-events: none;
+    z-index: var(--z-spark);
+    animation: spark-fade 0.6s ease-out forwards;
+}
+
+/* Animates sparks flying out and fading */
+@keyframes spark-fade {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0;
+    }
+}
